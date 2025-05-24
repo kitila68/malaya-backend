@@ -3,7 +3,7 @@
  const multer = require('multer');
  const path = require('path');
  const fs = require('fs');
- const Client = require('../models/client');
+ const Profile = require('../models/client');
 
  // Set up multer for file uploads
  const storage = multer.diskStorage({
