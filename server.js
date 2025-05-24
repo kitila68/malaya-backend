@@ -7,18 +7,21 @@
  const app = express();
  const SECRET_KEY = 'your_super_secret_key';
 
+ // ✅ CORS setup to allow Netlify frontend
+ app.use(cors({
+     origin: ['https://malaya-tz.com',
+         'https://malaya-tz.netlify.app'
+     ],
+     credentials: true
+ }));
+
  // Middleware
- app.use(cors());
  app.use(express.json());
  app.use(express.urlencoded({ extended: true }));
 
- // ✅ Serve static frontend files
- const frontendPath = path.join(__dirname, '..', 'frontend');
- app.use(express.static(frontendPath));
-
- // ✅ Serve sitemap.xml
- app.get('/sitemap.xml', (req, res) => {
-     res.sendFile(path.join(frontendPath, 'sitemap.xml'));
+ // ✅Simple test route to confirm backend is running
+ app.get('/', (req, res) => {
+     res.send('✅Malaya backend is working');
  });
 
  // ✅ MongoDB Atlas connection
