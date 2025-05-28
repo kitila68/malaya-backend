@@ -1,15 +1,18 @@
-const mongoose = require('mongoose');
+ const mongoose = require('mongoose');
 
-const clientSchema = new mongoose.Schema({
-    name: String,
-    profession: String,
-    description: String,
-    phoneNumber: String,
-    whatsappLink: String,
-    city: String,
-    religion: String,
-    images: [String],
-    video: String
-}, { timestamps: true });
+ const clientSchema = new mongoose.Schema({
+     name: { type: String, required: true },
+     profession: { type: String, required: true },
+     description: { type: String },
+     phoneNumber: { type: String },
+     whatsappLink: { type: String },
+     city: { type: String, required: true },
+     religion: { type: String },
+     images: [{ type: String }],
+     video: { type: String },
+     height: { type: Number }, // in cm
+     weight: { type: Number }, // in kg
+     age: { type: Number }
+ }, { timestamps: true });
 
-module.exports = mongoose.model('Client', clientSchema);
+ module.exports = mongoose.model('Client', clientSchema);
