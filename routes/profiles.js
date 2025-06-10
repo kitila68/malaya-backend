@@ -3,7 +3,10 @@ const router = express.Router();
 const Profile = require('../models/Client');
 
 // Create a new profile
+// Create a new profile
 router.post('/', async(req, res) => {
+    console.log("Incoming Profile Data:", req.body); // ✅ LOGGING for debugging
+
     try {
         const {
             name,
@@ -17,22 +20,34 @@ router.post('/', async(req, res) => {
             video
         } = req.body;
 
+        // ✅ Ensure images is always an array
+        let safeImages = [];
+        if (Array.isArray(images)) {
+            safeImages = images;
+        } else if (typeof images === 'string') {
+            safeImages = [images]; // convert single string to array
+        }
+
+        // ✅ Ensure video is a string (or empty)
+        const safeVideo = typeof video === 'string' ? video : '';
+
         const profile = new Profile({
-            name,
-            profession,
-            description,
-            phoneNumber,
-            whatsappLink,
-            city,
-            religion,
-            images: images || [],
-            video: video || ''
+            name: name || '',
+            profession: profession || '',
+            description: description || '',
+            phoneNumber: phoneNumber || '',
+            whatsappLink: whatsappLink || '',
+            city: city || '',
+            religion: religion || '',
+            images: safeImages,
+            video: safeVideo
         });
 
         const savedProfile = await profile.save();
         res.status(201).json(savedProfile);
+
     } catch (err) {
-        console.error(err);
+        console.error("Error creating profile:", err); // ✅ log full error
         res.status(500).json({ message: 'Failed to create profile.' });
     }
 });
