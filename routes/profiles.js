@@ -1,12 +1,13 @@
+const multer = require('multer');
+const upload = multer(); // No storage config, only used to parse form fields
 const express = require('express');
 const router = express.Router();
 const Profile = require('../models/Client');
 
 // Create a new profile
 // Create a new profile
-router.post('/', async(req, res) => {
+router.post('/', upload.none(), async(req, res) => {
     console.log("Incoming Profile Data:", req.body); // ✅ LOGGING for debugging
-
     try {
         const {
             name,
