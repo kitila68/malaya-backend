@@ -3,10 +3,10 @@ const path = require('path');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 
 const app = express();
-const SECRET_KEY = 'your_super_secret_key'; // You can move this to .env too
+const SECRET_KEY = process.env.SECRET_KEY || 'your_super_secret_key';
 
 // Enable CORS for frontend domains
 app.use(cors({
@@ -14,6 +14,7 @@ app.use(cors({
     credentials: true
 }));
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,8 +23,9 @@ app.get('/', (req, res) => {
     res.send('✅ Malaya backend is working');
 });
 
-// MongoDB connection
-const mongoURI = 'mongodb+srv://malaya_admin:malaya123@cluster0.ivomto5.mongodb.net/client_profiles?retryWrites=true&w=majority';
+// MongoDB Atlas connection
+const mongoURI = process.env.MONGO_URI || 'mongodb+srv://malaya_admin:malaya123@cluster0.ivomto5.mongodb.net/client_profiles?retryWrites=true&w=majority';
+
 mongoose.connect(mongoURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -41,20 +43,19 @@ app.post('/api/login', (req, res) => {
     res.status(401).json({ message: 'Invalid credentials' });
 });
 
-// Serve static files from /upload
+// Serve uploaded images
 const uploadPath = path.join(__dirname, 'public', 'upload');
 app.use('/upload', express.static(uploadPath));
 
-// Profile routes
+// Routes
 const profilesRouter = require('./routes/profiles');
+const uploadRouter = require('./routes/upload');
+
 app.use('/api/profiles', profilesRouter);
+app.use('/api/upload', uploadRouter);
 
-// Upload route (to ImgBB)
-const uploadRoute = require('./routes/upload');
-app.use('/api/upload', uploadRoute);
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
