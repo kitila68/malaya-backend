@@ -46,11 +46,11 @@ router.post('/', upload.none(), async(req, res) => {
             weight: parseInt(weight) || null,
             height: parseInt(height) || null,
             rating: parseInt(rating) || null,
-            video: video || '',
-            images: safeImages,
-            vip: vip === 'true',
-            premium: premium === 'true',
-            isNew: isNew === 'true',
+            video: typeof video === 'string' ? video : '',
+            images: Array.isArray(images) ? images : (typeof images === 'string' ? [images] : []),
+            vip: vip === 'true' || vip === true,
+            premium: premium === 'true' || premium === true,
+            isNew: isNew === 'true' || isNew === true,
             createdAt: new Date()
         };
 
@@ -91,8 +91,7 @@ router.put('/:id', async(req, res) => {
 
         if (req.body.images) {
             updateFields.images = Array.isArray(req.body.images) ?
-                req.body.images :
-                [req.body.images];
+                req.body.images : [req.body.images];
         }
 
         const result = await req.app.locals.collection.updateOne({ _id: new ObjectId(req.params.id) }, { $set: updateFields });
